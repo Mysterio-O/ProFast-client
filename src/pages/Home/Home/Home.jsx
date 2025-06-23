@@ -4,6 +4,7 @@ import HowItWorks from '../HowItWorks/HowItWorks';
 import OurServices from '../OurServices/OurServices';
 import LogoMarquee from '../TeamsMarquee/LogoMarquee';
 import OurSupports from '../OurSupports/OurSupports';
+import BeMerchant from '../BeMerchant/BeMerchant';
 
 const Home = () => {
     return (
@@ -30,7 +31,9 @@ const Home = () => {
 
             <div className="mt-10 border-b-2 border-dashed border-black mb-10 mx-10 md:mb-20 md:mx-40 opacity-30"></div>
 
-
+            <section className='px-4 md:px-16 lg:px-40 py-6 md:py-10 lg:py-20'>
+                <BeMerchant />
+            </section>
 
         </div>
     );
