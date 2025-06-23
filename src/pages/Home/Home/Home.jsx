@@ -5,6 +5,7 @@ import OurServices from '../OurServices/OurServices';
 import LogoMarquee from '../TeamsMarquee/LogoMarquee';
 import OurSupports from '../OurSupports/OurSupports';
 import BeMerchant from '../BeMerchant/BeMerchant';
+import ReviewSection from '../Reviews/ReviewSection';
 
 const Home = () => {
     return (
@@ -33,6 +34,9 @@ const Home = () => {
 
             <section className='px-4 md:px-16 lg:px-40 py-6 md:py-10 lg:py-20'>
                 <BeMerchant />
+            </section>
+            <section>
+                <ReviewSection/>
             </section>
 
         </div>
