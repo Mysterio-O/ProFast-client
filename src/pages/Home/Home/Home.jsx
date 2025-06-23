@@ -6,6 +6,7 @@ import LogoMarquee from '../TeamsMarquee/LogoMarquee';
 import OurSupports from '../OurSupports/OurSupports';
 import BeMerchant from '../BeMerchant/BeMerchant';
 import ReviewSection from '../Reviews/ReviewSection';
+import FAQ from '../Accordian/FAQ';
 
 const Home = () => {
     return (
@@ -37,6 +38,10 @@ const Home = () => {
             </section>
             <section>
                 <ReviewSection/>
+            </section>
+
+            <section className='px-10 md:px-16 lg:px-40'>
+                <FAQ/>
             </section>
 
         </div>
