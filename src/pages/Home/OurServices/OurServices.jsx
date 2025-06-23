@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaShippingFast, FaGlobe, FaBoxOpen, FaMoneyBillWave, FaBuilding, FaUndoAlt } from "react-icons/fa";
-import ServiceCard from './ServiceCard';
+import ServiceCard from './ServiceCard'
 const OurServices = () => {
 
 

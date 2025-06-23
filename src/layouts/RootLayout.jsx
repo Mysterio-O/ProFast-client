@@ -5,7 +5,7 @@ import Footer from '../pages/shared/Footer/Footer';
 
 const RootLayout = () => {
     return (
-        <div className='bg-gray-100'>
+        <div className='bg-gray-100 font-urbanist'>
             <nav className='py-8 px-12'>
                 <Navbar/>
             </nav>

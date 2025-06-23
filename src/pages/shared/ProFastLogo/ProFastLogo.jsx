@@ -2,7 +2,7 @@ import React from 'react';
 import logo from '../../../assets/logo.png';
 import { motion } from 'motion/react'
 
-const ProFastLogo = () => {
+const ProFastLogo = ({color}) => {
 
     const imageVariant = {
         initial: { opacity: 0, y: -20 },
@@ -30,7 +30,7 @@ const ProFastLogo = () => {
                 initial="initial"
                 animate="animate"
                 transition="transition"
-                className='text-3xl -ml-4 text-black font-extrabold'>Profast</motion.p>
+                className={`text-3xl -ml-4 text-${color} font-extrabold`}>Profast</motion.p>
         </div>
     );
 };

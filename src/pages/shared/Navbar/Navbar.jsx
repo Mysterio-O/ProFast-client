@@ -22,7 +22,7 @@ const Navbar = () => {
                         {navLinks}
                     </ul>
                 </div>
-<ProFastLogo/>
+                <ProFastLogo color={'gray-800'} />
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1 space-x-2">

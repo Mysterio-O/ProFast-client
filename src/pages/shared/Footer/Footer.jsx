@@ -5,7 +5,7 @@ const Footer = () => {
     return (
         <footer className="footer footer-horizontal footer-center bg-neutral text-neutral-content p-10">
             <aside>
-                <ProFastLogo/>
+                <ProFastLogo color={'white'}/>
                 <p className="font-bold">
                     ACME Industries Ltd.
                     <br />
