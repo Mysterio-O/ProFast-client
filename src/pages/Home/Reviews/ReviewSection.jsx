@@ -128,12 +128,12 @@ const ReviewSection = () => {
                                     </span>
                                 </div>
                                 {/* Review Message and Customer Info */}
-                                <div className="flex items-center">
+                                <div className="flex items-center flex-col gap-3">
                                     <p className="text-[#606060] text-lg pr-6 flex-1">
                                         {review.message}
                                     </p>
-                                    <div className="border-l border-gray-300 h-16"></div>
-                                    <div className="pl-4 flex items-center">
+                                    <div className="divider opacity-25 divider-neutral"></div>
+                                    <div className="pl-4 flex w-full items-center">
                                         <img
                                             src={review.photo}
                                             alt={review.name}
