@@ -24,7 +24,7 @@ const BangladeshMap = ({ serviceCenters, activeCoords }) => {
 
     return (
         <div style={{ height: '500px', width: '100%' }}>
-            <MapContainer center={position} zoom={7} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
+            <MapContainer center={position} zoom={8} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
                 <TileLayer
                     attribution='&copy; OpenStreetMap contributors'
                     url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'

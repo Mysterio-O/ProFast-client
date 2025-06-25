@@ -10,6 +10,7 @@ const Navbar = () => {
     const navLinks = <>
         <NavLink to='/'><li className='text-gray-800'>Home</li></NavLink>
         <NavLink to='/about'><li className='text-gray-800'>About</li></NavLink>
+        <NavLink to='/sendParcel'><li className='text-gray-800'>Send A Parcel</li></NavLink>
         <NavLink to='/coverage'><li className='text-gray-800'>Coverage</li></NavLink>
 
     </>
