@@ -101,7 +101,7 @@ const ReviewSection = () => {
     }, [currentIndex]);
 
     return (
-        <section className="py-16 bg-gray-100 min-h-screen flex items-center">
+        <section className="py-16 bg-gray-100 min-h-screen flex items-center overflow-hidden">
             <div className="container mx-auto px-4">
                 <div data-aos="zoom-out-down" data-aos-easing="ease-out-cubic"
                     data-aos-duration="4000">

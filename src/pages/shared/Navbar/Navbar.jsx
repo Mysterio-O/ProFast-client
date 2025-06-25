@@ -1,13 +1,28 @@
 import React from 'react';
 import { NavLink } from 'react-router';
 import ProFastLogo from '../ProFastLogo/ProFastLogo';
+import PrimaryButton from '../../../shared/PrimaryButton/PrimaryButton';
+import useAuth from '../../../hooks/useAuth';
 const Navbar = () => {
 
+    const { user, userLogOut } = useAuth();
+
     const navLinks = <>
-        <NavLink><li className='text-gray-800'>Home</li></NavLink>
-        <NavLink><li className='text-gray-800'>About</li></NavLink>
+        <NavLink to='/'><li className='text-gray-800'>Home</li></NavLink>
+        <NavLink to='/about'><li className='text-gray-800'>About</li></NavLink>
+        <NavLink to='/coverage'><li className='text-gray-800'>Coverage</li></NavLink>
 
     </>
+
+    const handleSignOut = () => {
+        userLogOut().then(() => {
+            console.log('user signed out successfully!')
+        }).catch(err => {
+            const errCode = err.code;
+            const errMessage = err.message;
+            console.error(errCode, errMessage);
+        })
+    }
 
     return (
         <div className="navbar bg-[#FFFFFF] shadow-sm rounded-2xl">
@@ -30,7 +45,13 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end">
-                <a className="btn">Button</a>
+                <div className='flex gap-4 items-center'>
+                    {
+                        user ? <button onClick={handleSignOut} className="btn bg-orange-400 text-black px-8 py-4 border-0 rounded-xl border-t-2">Sign Out</button> : <button className="btn bg-transparent text-black px-8 py-4 border-0 rounded-xl border-t-2">Sign In</button>
+                    }
+
+                    <PrimaryButton text='Become a Rider' />
+                </div>
             </div>
         </div>
     );
