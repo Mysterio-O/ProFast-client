@@ -45,7 +45,7 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end">
-                <div className='flex gap-4 items-center'>
+                <div className='hidden md:flex gap-4 items-center'>
                     {
                         user ? <button onClick={handleSignOut} className="btn bg-orange-400 text-black px-8 py-4 border-0 rounded-xl border-t-2">Sign Out</button> : <button className="btn bg-transparent text-black px-8 py-4 border-0 rounded-xl border-t-2">Sign In</button>
                     }
