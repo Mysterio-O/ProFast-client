@@ -8,6 +8,8 @@ import ForgetPassword from "../pages/Authentication/ForgetPassword/ForgetPasswor
 import Coverage from "../pages/Coverage/Coverage";
 import PrivateRoute from "../routes/PrivateRoute";
 import SendParcel from "../pages/SendParcel/SendParcel";
+import DashboardLayout from "../layouts/DashboardLayout";
+import MyParcels from "../pages/Dashboard/MyParcels/MyParcels";
 
 export const router = createBrowserRouter([
     {
@@ -25,7 +27,7 @@ export const router = createBrowserRouter([
                 element: <PrivateRoute>
                     <SendParcel />
                 </PrivateRoute>,
-                loader:()=>fetch('/warehouses.json')
+                loader: () => fetch('/warehouses.json')
             }
         ]
     },
@@ -45,6 +47,20 @@ export const router = createBrowserRouter([
                 path: 'forget-password',
                 Component: ForgetPassword
             }
+        ]
+    },
+    {
+        path: '/dashboard',
+        element: <PrivateRoute>
+            <DashboardLayout />
+        </PrivateRoute>,
+        children:[
+            {
+                path:'myParcels',
+                Component:MyParcels
+            }
+        
+
         ]
     }
 ])

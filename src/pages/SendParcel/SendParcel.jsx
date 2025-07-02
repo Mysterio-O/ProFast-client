@@ -2,8 +2,21 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLoaderData } from 'react-router';
 import Swal from 'sweetalert2';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import useAuth from '../../hooks/useAuth';
+
+const generateTrackingID = () => {
+  const date = new Date();
+  const datePart = date.toISOString().split("T")[0].replace(/-/g, "");
+  const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
+  return `PCL-${datePart}-${rand}`;
+};
 
 const SendParcel = () => {
+
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+
   const warehouses = useLoaderData(); // Getting all warehouses from loader
   const {
     register,
@@ -13,40 +26,113 @@ const SendParcel = () => {
     reset
   } = useForm();
 
-  const type = watch('type'); // Watching parcel type (document/non-document)
-  const senderRegion = watch('senderRegion');
-  const receiverRegion = watch('receiverRegion');
+  const parcelType = watch("type");
+  const senderRegion = watch("senderRegion");
+  const receiverRegion = watch("receiverRegion");
 
   // Filter warehouses by selected region
   const getWarehousesByRegion = (region) => {
     return warehouses.filter(w => w.region === region);
   };
 
-  // Calculate delivery cost based on parcel type and weight
-  const calculateCost = (type, weight) => {
-    let baseCost = type === 'document' ? 100 : 150;
-    if (type === 'non-document' && weight) {
-      baseCost += parseFloat(weight) * 20;
-    }
-    return baseCost;
-  };
+  // console.log(getWarehousesByRegion('Dhaka'))
+
 
   // Handle form submission
   const onSubmit = (data) => {
-    console.log(data);
-    const cost = calculateCost(data.type, data.weight);
-    Swal.fire({
-      title: `Estimated Cost: ৳${cost}`,
-      text: 'Do you want to confirm the booking?',
-      icon: 'info',
-      showCancelButton: true,
-      confirmButtonText: 'Confirm',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire('Booked!', 'Your parcel has been booked.', 'success');
-        reset();
+
+    const weight = parseFloat(data.weight) || 0;
+    const isSameDistrict = data.sender_center === data.receiver_center;
+
+    let baseCost = 0;
+    let extraCost = 0;
+    let breakdown = "";
+
+    if (data.type === "document") {
+      baseCost = isSameDistrict ? 60 : 80;
+      breakdown = `Document delivery ${isSameDistrict ? "within" : "outside"} the district.`;
+    } else {
+      if (weight <= 3) {
+        baseCost = isSameDistrict ? 110 : 150;
+        breakdown = `Non-document up to 3kg ${isSameDistrict ? "within" : "outside"} the district.`;
+      } else {
+        const extraKg = weight - 3;
+        const perKgCharge = extraKg * 40;
+        const districtExtra = isSameDistrict ? 0 : 40;
+        baseCost = isSameDistrict ? 110 : 150;
+        extraCost = perKgCharge + districtExtra;
+
+        breakdown = `
+        Non-document over 3kg ${isSameDistrict ? "within" : "outside"} the district.<br/>
+        Extra charge: ৳40 x ${extraKg.toFixed(1)}kg = ৳${perKgCharge}<br/>
+        ${districtExtra ? "+ ৳40 extra for outside district delivery" : ""}
+      `;
       }
-    });
+    }
+
+    const totalCost = baseCost + extraCost;
+
+    Swal.fire({
+      title: "Delivery Cost Breakdown",
+      icon: "info",
+      html: `
+      <div class="text-left text-base space-y-2">
+        <p><strong>Parcel Type:</strong> ${data.type}</p>
+        <p><strong>Weight:</strong> ${weight} kg</p>
+        <p><strong>Delivery Zone:</strong> ${isSameDistrict ? "Within Same District" : "Outside District"}</p>
+        <hr class="my-2"/>
+        <p><strong>Base Cost:</strong> ৳${baseCost}</p>
+        ${extraCost > 0 ? `<p><strong>Extra Charges:</strong> ৳${extraCost}</p>` : ""}
+        <div class="text-gray-500 text-sm">${breakdown}</div>
+        <hr class="my-2"/>
+        <p class="text-xl font-bold text-green-600">Total Cost: ৳${totalCost}</p>
+      </div>
+    `,
+      showDenyButton: true,
+      confirmButtonText: "💳 Proceed to Payment",
+      denyButtonText: "✏️ Continue Editing",
+      confirmButtonColor: "#16a34a",
+      denyButtonColor: "#d3d3d3",
+      customClass: {
+        popup: "rounded-xl shadow-md px-6 py-6",
+      },
+    }).then(result => {
+      if (result.isConfirmed) {
+        const parcelData = {
+          ...data,
+          cost: totalCost,
+          created_by: user.email,
+          payment_status: 'unpaid',
+          delivery_status: 'not_collected',
+          creation_date: new Date().toISOString(),
+          tracking_id: generateTrackingID(),
+        };
+        console.log("Ready for payment:", parcelData);
+
+        axiosSecure.post('/addParcel', parcelData)
+          .then(res => {
+            console.log(res.data);
+            if (res?.data?.result?.insertedId) {
+              reset();
+              // TODO: redirect to a payment page 
+              Swal.fire({
+                title: "Redirecting...",
+                text: "Proceeding to payment gateway.",
+                icon: "success",
+                timer: 1500,
+                showConfirmButton: false,
+              });
+            }
+          })
+
+      }
+    })
+
+
+
+
+
+
   };
 
   // Unique region list from warehouse data
@@ -89,7 +175,7 @@ const SendParcel = () => {
                 {...register('weight')}
                 placeholder="Parcel Weight (KG)"
                 className="input input-bordered w-full"
-                disabled={type === 'document'}
+                disabled={parcelType === 'document'}
               />
             </div>
           </div>

@@ -12,7 +12,9 @@ const Navbar = () => {
         <NavLink to='/about'><li className='text-gray-800'>About</li></NavLink>
         <NavLink to='/sendParcel'><li className='text-gray-800'>Send A Parcel</li></NavLink>
         <NavLink to='/coverage'><li className='text-gray-800'>Coverage</li></NavLink>
-
+{
+    user && <NavLink to='/dashboard'><li className='text-gray-800'>Dashboard</li></NavLink>
+}
     </>
 
     const handleSignOut = () => {
