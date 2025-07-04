@@ -1,11 +1,12 @@
 import React from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, useNavigate } from 'react-router';
 import ProFastLogo from '../ProFastLogo/ProFastLogo';
 import PrimaryButton from '../../../shared/PrimaryButton/PrimaryButton';
 import useAuth from '../../../hooks/useAuth';
 const Navbar = () => {
 
     const { user, userLogOut } = useAuth();
+    const navigate = useNavigate();
 
     const navLinks = <>
         <NavLink to='/'><li className='text-gray-800'>Home</li></NavLink>
@@ -50,10 +51,12 @@ const Navbar = () => {
             <div className="navbar-end">
                 <div className='hidden md:flex gap-4 items-center'>
                     {
-                        user ? <button onClick={handleSignOut} className="btn bg-orange-400 text-black px-8 py-4 border-0 rounded-xl border-t-2">Sign Out</button> : <button className="btn bg-transparent text-black px-8 py-4 border-0 rounded-xl border-t-2">Sign In</button>
+                        user ? <button onClick={handleSignOut} className="btn bg-orange-400 text-black px-8 py-4 border-0 rounded-xl border-t-2">Sign Out</button> : <button
+                        onClick={()=>navigate('/login')}
+                        className="btn bg-transparent text-black px-8 py-4 border-0 rounded-xl border-t-2">Sign In</button>
                     }
 
-                    <PrimaryButton text='Become a Rider' />
+                    <PrimaryButton text='Become a Rider' to='/beARider' />
                 </div>
             </div>
         </div>

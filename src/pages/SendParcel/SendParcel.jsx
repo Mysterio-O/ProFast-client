@@ -124,6 +124,9 @@ const SendParcel = () => {
               });
             }
           })
+          .catch(err => {
+            console.log(err);
+          })
 
       }
     })

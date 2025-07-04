@@ -12,6 +12,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import MyParcels from "../pages/Dashboard/MyParcels/MyParcels";
 import Payment from "../pages/Dashboard/Payment/Payment";
 import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
+import BeARider from "../pages/Dashboard/BeARider/BeARider";
 
 export const router = createBrowserRouter([
     {
@@ -30,6 +31,13 @@ export const router = createBrowserRouter([
                     <SendParcel />
                 </PrivateRoute>,
                 loader: () => fetch('/warehouses.json')
+            },
+            {
+                path: 'beARider',
+                element: <PrivateRoute>
+                    <BeARider />
+                </PrivateRoute>,
+                loader: () => fetch('/serviceCenter.json')
             }
         ]
     },
@@ -67,10 +75,8 @@ export const router = createBrowserRouter([
             },
             {
                 path: 'paymentHistory',
-                Component: PaymentHistory 
+                Component: PaymentHistory
             }
-
-
         ]
     }
 ])

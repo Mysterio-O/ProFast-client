@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaRegUserCircle } from 'react-icons/fa';
 import GoogleButton from '../shared/GoogleButton';
 import { motion } from 'motion/react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../../hooks/useAuth';
+import axios from 'axios';
+import useAxiosPublic from '../../../hooks/useAxiosPublic/useAxiosPublic';
+import Swal from 'sweetalert2';
 
 const Register = () => {
 
@@ -12,16 +15,39 @@ const Register = () => {
 
     const { createUser, setUserProfile } = useAuth();
     // console.log(createUser);
+    const [profilePic, setProfilePic] = useState('');
+    const axiosPublic = useAxiosPublic();
+    const navigate = useNavigate();
 
     const handleRegister = data => {
         // console.log(data);
         const { email, password, name } = data;
         createUser(email, password)
-            .then(userCredentials => {
+            .then(async (userCredentials) => {
                 console.log('user created a new account', userCredentials);
-                setUserProfile({ displayName: name })
+
+                const userInfo = {
+                    email: data.email,
+                    role: 'user',
+                    created_at: new Date().toISOString(),
+                    last_log_in: new Date().toISOString()
+                }
+
+                const res = await axiosPublic.post('/users', userInfo);
+                console.log(res.data);
+
+                setUserProfile({ displayName: name, photoURL: profilePic })
                     .then(() => {
                         console.log('profile updated');
+                        Swal.fire({
+                            title: 'User Created',
+                            text: 'User created successfully.',
+                            icon: 'success',
+                            toast: true,
+                            timer: 1500,
+                            position: 'top-left'
+                        })
+                        navigate('/dashboard');
                     }).catch(err => {
                         const errCode = err.code;
                         const errMessage = err.message;
@@ -34,6 +60,34 @@ const Register = () => {
             })
     }
 
+    const handlePhoto = async (e) => {
+        const image = e.target.files[0];
+        const formData = new FormData();
+        formData.append('image', image);
+
+        // ✅ Proper way to inspect FormData content
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+        }
+
+        const imageUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMAGE_UPLOAD_KEY}`;
+
+        try {
+            const res = await axios.post(imageUrl, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            setProfilePic(res.data.data.url);
+
+            console.log("Uploaded image:", res.data);
+        } catch (err) {
+            console.error("Upload failed:", err.response?.data || err.message);
+        }
+    };
+
+    console.log(profilePic);
     return (
         <div>
             <h4 className='text-[42px] font-extrabold text-black'>Create Account</h4>
@@ -56,6 +110,13 @@ const Register = () => {
                                 ? <p className='text-red-500'>Enter a valid name</p>
                                 : ''
                     }
+                </legend>
+                <legend>
+                    <label className='text-black text-sm font-medium' htmlFor="photo">Profile Photo</label>
+                    <input
+                        onChange={handlePhoto}
+                        type="file"
+                        className="input" />
                 </legend>
                 <legend>
                     <label className='text-black text-sm font-medium' htmlFor="email">Email</label>
