@@ -2,12 +2,18 @@ import React from 'react';
 import { Link, NavLink, Outlet } from 'react-router';
 import ProFastLogo from '../pages/shared/ProFastLogo/ProFastLogo';
 import { FaHome, FaBoxOpen, FaMoneyCheckAlt, FaUserEdit, FaSearchLocation } from 'react-icons/fa';
+import useAuth from '../hooks/useAuth';
 
 const DashboardLayout = () => {
+
+    const { user } = useAuth();
+    
     return (
         <div className="drawer lg:drawer-open">
             <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content flex flex-col">
+<h3 className='text-2xl text-center py-2'>{user.displayName}</h3>
+
 
                 {/* Navbar */}
                 <div className="navbar bg-base-300 w-full lg:hidden">
