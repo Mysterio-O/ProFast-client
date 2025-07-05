@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import GoogleButton from '../shared/GoogleButton';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../../hooks/useAuth';
@@ -9,6 +9,9 @@ const Login = () => {
 
     const { loginUser } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    // console.log(location);
+    const from = location?.state;
 
     const { register, handleSubmit, formState: { errors } } = useForm();
     const onSubmit = data => {
@@ -17,7 +20,7 @@ const Login = () => {
         loginUser(email, password)
             .then(userCredentials => {
                 console.log('user signed in using email and password->', userCredentials);
-                navigate('/');
+                navigate(`${from ? from : "/dashboard"}`);
             }).catch(err => {
                 const errCode = err.code;
                 const errMessage = err.message;
@@ -60,14 +63,14 @@ const Login = () => {
             </form>
 
             <p className='text-[#71717A] mt-3'>Don't have an account?
-                <Link to='/register'>
+                <Link state={from} to='/register'>
                     <span className='text-[#CAEB66] font-medium'>Register</span>
                 </Link>
             </p>
 
             <p className="text-center text-[#71717A] my-3">Or</p>
             <div className='flex justify-center items-center'>
-                <GoogleButton method={'Login'} />
+                <GoogleButton method={'Login'} from={from}/>
             </div>
 
         </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaRegUserCircle } from 'react-icons/fa';
 import GoogleButton from '../shared/GoogleButton';
 import { motion } from 'motion/react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../../hooks/useAuth';
 import axios from 'axios';
@@ -18,6 +18,9 @@ const Register = () => {
     const [profilePic, setProfilePic] = useState('');
     const axiosPublic = useAxiosPublic();
     const navigate = useNavigate();
+    const location = useLocation();
+    // console.log(location);
+    const from = location?.state;
 
     const handleRegister = data => {
         // console.log(data);
@@ -47,7 +50,7 @@ const Register = () => {
                             timer: 1500,
                             position: 'top-left'
                         })
-                        navigate('/dashboard');
+                        navigate(`${from ? from : "/"}`);
                     }).catch(err => {
                         const errCode = err.code;
                         const errMessage = err.message;
@@ -156,7 +159,7 @@ const Register = () => {
                 </Link>
             </p>
             <div className='flex justify-center items-center mt-3'>
-                <GoogleButton method={'Register'} />
+                <GoogleButton method={'Register'} from={from}/>
             </div>
         </div>
     );

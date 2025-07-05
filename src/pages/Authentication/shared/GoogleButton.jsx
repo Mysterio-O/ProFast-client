@@ -2,7 +2,7 @@ import React from 'react';
 import useAuth from '../../../hooks/useAuth';
 import { useNavigate } from 'react-router';
 
-const GoogleButton = ({ method }) => {
+const GoogleButton = ({ method,from }) => {
 
     const { signInWithGoogle } = useAuth();
     const navigate = useNavigate();
@@ -10,7 +10,7 @@ const GoogleButton = ({ method }) => {
     const handleGoogleLogin = () => {
         signInWithGoogle().then(result => {
             console.log('user signed in using google->', result);
-            navigate('/')
+            navigate(`${from ? from : "/dashboard"}`)
         }).catch(err => {
             const errCode = err.code;
             const errMessage = err.message;
