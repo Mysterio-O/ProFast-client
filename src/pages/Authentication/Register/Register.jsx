@@ -33,7 +33,8 @@ const Register = () => {
                     email: data.email,
                     role: 'user',
                     created_at: new Date().toISOString(),
-                    last_log_in: new Date().toISOString()
+                    last_log_in: new Date().toISOString(),
+                    method:'password'
                 }
 
                 const res = await axiosPublic.post('/users', userInfo);

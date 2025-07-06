@@ -1,15 +1,35 @@
 import React from 'react';
 import useAuth from '../../../hooks/useAuth';
 import { useNavigate } from 'react-router';
+import useAxiosPublic from '../../../hooks/useAxiosPublic/useAxiosPublic';
 
 const GoogleButton = ({ method,from }) => {
 
     const { signInWithGoogle } = useAuth();
     const navigate = useNavigate();
+    const axiosPublic = useAxiosPublic()
 
     const handleGoogleLogin = () => {
-        signInWithGoogle().then(result => {
+
+
+        signInWithGoogle().then(async(result) => {
             console.log('user signed in using google->', result);
+
+            const email=result.user.email
+            // console.log(result.user,'email->',email);
+            const userInfo = {
+                email,
+                role:'user',
+                created_at: new Date().toISOString(),
+                last_log_in:new Date().toISOString(),
+                method:'google'
+            }
+
+            if(method === 'Register'){
+            const res = await axiosPublic.post('/users',userInfo)
+            console.log(res.data);
+        }
+
             navigate(`${from ? from : "/dashboard"}`)
         }).catch(err => {
             const errCode = err.code;

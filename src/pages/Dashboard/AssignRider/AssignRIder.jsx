@@ -1,11 +1,18 @@
-import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { useState } from 'react';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { FaMotorcycle } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 const AssignRIder = () => {
 
     const axiosSecure = useAxiosSecure();
+
+    const [selectedParcel, setSelectedParcel] = useState(null);
+    const [riders, setRiders] = useState([]);
+    const [loadingRiders, setLoadingRiders] = useState(false);
+    const queryClient = useQueryClient();
+
 
     const { data: parcels = [], isLoading } = useQuery({
         queryKey: ['assignableParcels'],
@@ -16,7 +23,52 @@ const AssignRIder = () => {
             );
         }
     });
-    console.log(parcels);
+    // console.log(parcels);
+
+    const { mutateAsync: assignRider } = useMutation({
+        mutationFn: async ({ parcelId, rider }) => {
+            console.log('entered assignRider', parcelId, rider);
+            const res = await axiosSecure.patch(`/parcels/${parcelId}/assign`, {
+                riderId: rider._id,
+                riderName: rider.name
+            });
+            return res.data
+        },
+        onSuccess: () => {
+            console.log('entered on success in assigning rider');
+            queryClient.invalidateQueries(["assignableParcels"]);
+            Swal.fire("Success", "Rider assigned successfully!", "success");
+            document.getElementById("assignModal").close();
+        },
+        onError: () => {
+            Swal.fire("Error", "Failed to assign rider", "error");
+        }
+    })
+
+    const openAssignModal = async (parcel) => {
+        setSelectedParcel(parcel);
+        setRiders([]);
+        setLoadingRiders(true);
+
+        try {
+            const res = await axiosSecure.get('/riders/available', {
+                params: {
+                    district: parcel.senderCenter
+                }
+            });
+            setRiders(res.data);
+        }
+        catch (error) {
+            console.error("Error fetching rider data", error);
+        }
+        finally {
+            setLoadingRiders(false);
+            document.getElementById("assignModal").showModal();
+        }
+
+    };
+
+
 
     return (
         <div className="p-6">
@@ -54,7 +106,7 @@ const AssignRIder = () => {
                                     <td>{new Date(parcel.creation_date).toLocaleDateString()}</td>
                                     <td>
                                         <button
-                                            // onClick={() => openAssignModal(parcel)}
+                                            onClick={() => openAssignModal(parcel)}
                                             className="btn btn-sm btn-primary text-black">
                                             <FaMotorcycle className="inline-block mr-1" />
                                             Assign Rider
@@ -65,7 +117,7 @@ const AssignRIder = () => {
                         </tbody>
                     </table>
                     {/* 🛵 Assign Rider Modal */}
-                    {/* <dialog id="assignModal" className="modal">
+                    <dialog id="assignModal" className="modal">
                         <div className="modal-box max-w-2xl">
                             <h3 className="text-lg font-bold mb-3">
                                 Assign Rider for Parcel:{" "}
@@ -120,7 +172,7 @@ const AssignRIder = () => {
                                 </form>
                             </div>
                         </div>
-                    </dialog> */}
+                    </dialog>
                 </div>
             )}
         </div>
