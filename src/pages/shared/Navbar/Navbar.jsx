@@ -3,19 +3,22 @@ import { NavLink, useNavigate } from 'react-router';
 import ProFastLogo from '../ProFastLogo/ProFastLogo';
 import PrimaryButton from '../../../shared/PrimaryButton/PrimaryButton';
 import useAuth from '../../../hooks/useAuth';
+import useUserRole from '../../../hooks/useUserRole';
 const Navbar = () => {
 
     const { user, userLogOut } = useAuth();
     const navigate = useNavigate();
+
+    const { role, role_loading } = useUserRole();
 
     const navLinks = <>
         <NavLink to='/'><li className='text-gray-800'>Home</li></NavLink>
         <NavLink to='/about'><li className='text-gray-800'>About</li></NavLink>
         <NavLink to='/sendParcel'><li className='text-gray-800'>Send A Parcel</li></NavLink>
         <NavLink to='/coverage'><li className='text-gray-800'>Coverage</li></NavLink>
-{
-    user && <NavLink to='/dashboard'><li className='text-gray-800'>Dashboard</li></NavLink>
-}
+        {
+            user && <NavLink to='/dashboard'><li className='text-gray-800'>Dashboard</li></NavLink>
+        }
     </>
 
     const handleSignOut = () => {
@@ -52,11 +55,17 @@ const Navbar = () => {
                 <div className='hidden md:flex gap-4 items-center'>
                     {
                         user ? <button onClick={handleSignOut} className="btn bg-orange-400 text-black px-8 py-4 border-0 rounded-xl border-t-2">Sign Out</button> : <button
-                        onClick={()=>navigate('/login')}
-                        className="btn bg-transparent text-black px-8 py-4 border-0 rounded-xl border-t-2">Sign In</button>
+                            onClick={() => navigate('/login')}
+                            className="btn bg-transparent text-black px-8 py-4 border-0 rounded-xl border-t-2">Sign In</button>
                     }
 
-                    <PrimaryButton text='Become a Rider' to='/beARider' />
+                    {/* {
+                        !user && <PrimaryButton text='Become a Rider' to='/beARider' />
+                    } */}
+                    {
+                        !role_loading && role === 'user' && <PrimaryButton text='Become a Rider' to='/beARider' />
+                    }
+
                 </div>
             </div>
         </div>

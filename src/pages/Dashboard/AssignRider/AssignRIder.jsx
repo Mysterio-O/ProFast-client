@@ -30,7 +30,8 @@ const AssignRIder = () => {
             console.log('entered assignRider', parcelId, rider);
             const res = await axiosSecure.patch(`/parcels/${parcelId}/assign`, {
                 riderId: rider._id,
-                riderName: rider.name
+                riderName: rider.name,
+                riderEmail:rider.email
             });
             return res.data
         },
